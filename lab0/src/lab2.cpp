@@ -207,6 +207,9 @@ void loop() {
     // Start red phase
     crossing();
 
+    // Call sensorTouched again to reset state
+    sensorTouched();
+
   }
 
 }
