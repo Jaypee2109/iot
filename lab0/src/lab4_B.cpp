@@ -30,8 +30,15 @@ void setup() {
   if (myIMU.begin() == false) {
     Serial.println("Could not connect to LSM6DSO. Check wiring.");
     while (1) { delay(10); }
+
   }
+
   Serial.println("LSM6DSO is online.");
+
+  if (myIMU.initialize(BASIC_SETTINGS)) {
+    Serial.println("LSM6DSO: Loaded basic settings.");
+
+  }
 
 
   // Calibrate the Y-axis
@@ -44,7 +51,9 @@ void setup() {
     float ay = myIMU.readFloatAccelY();
     sum += ay;
     delay(20);
+
   }
+
   baselineAccelY = sum / calibrationSamples;
   
   Serial.print("Calibration complete. Baseline Y-axis: ");
@@ -78,6 +87,7 @@ void setup() {
   BLEDevice::startAdvertising();
 
   Serial.println("BLE advertising started! Connect to see step count updates.");
+
 }
 
 void loop() {
@@ -97,13 +107,16 @@ void loop() {
     String stepsStr = String(stepCount);
     pCharacteristic->setValue(stepsStr.c_str());
     pCharacteristic->notify();
+
   }
 
   // Reset the detection state once we drop below a lower threshold
   if (stepDetected && (deltaY < resetThreshold)) {
     stepDetected = false;
+
   }
 
   // Sample rate 20ms
   delay(20);
+  
 }
